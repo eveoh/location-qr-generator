@@ -1,0 +1,98 @@
+import de.undercouch.gradle.tasks.download.Download
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "http://repo.springsource.org/milestone" }
+    }
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:0.5.0.M7')
+        classpath('de.undercouch:gradle-download-task:0.4')
+    }
+}
+
+version = '1.0.0'
+
+ext {
+    springBootVersion = '0.5.0.M7'
+    zxingVersion = '2.3.0'
+    poiVersion = '3.9'
+    httpClientVersion = '4.3.1'
+    jreVersion = '1.7.0_45'
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = project.name
+    archiveName = "${project.name}.jar"
+    version =  project.version
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://repo.spring.io/milestone' }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+    compile("com.google.zxing:core:${zxingVersion}")
+    compile("com.google.zxing:javase:${zxingVersion}")
+
+    compile("org.apache.poi:poi:${poiVersion}")
+    compile("org.apache.poi:poi-ooxml:${poiVersion}")
+
+    compile("org.apache.httpcomponents:httpclient:${httpClientVersion}")
+}
+
+// Download JRE archive.
+task downloadWinJRE(type: Download) {
+    def target = "${buildDir}/jre/download/jre-${jreVersion}-windows-i586.zip"
+
+    src "http://files.eveoh.nl/jre-${jreVersion}-windows-i586.zip"
+    dest target
+
+    onlyIf { !new File(target).exists() }
+}
+
+// Explode JRE archive into the build folder.
+task unzipWinJRE(type: Copy) {
+    def target = new File("${buildDir}/jre/win32");
+    into target
+    from zipTree("${buildDir}/jre/download/jre-${jreVersion}-windows-i586.zip")
+    onlyIf { !target.exists() }
+    doLast {
+        ant.delete(includeemptydirs:true, quiet:true) {
+            fileset(dir:buildDir, includes:"tmp/expandedArchives/jre${jreVersion}*/**", defaultexcludes:false )
+        }
+    }
+}
+unzipWinJRE.dependsOn downloadWinJRE
+
+// Create a release ZIP archive
+task assembleZip(type: Zip) {
+    archiveName = "${project.name}-${project.version}.zip"
+    destinationDir = new File("${buildDir}/releases")
+
+    into("${project.name}-${project.version}") {
+        from 'src/main/dist'
+        from 'README.md'
+
+        into('jre') {
+            from "${buildDir}/jre/win32/jre${jreVersion}"
+        }
+
+        into('lib') {
+            from "${buildDir}/libs/"
+            include '*.jar'
+        }
+    }
+}
+
+assembleZip.dependsOn unzipWinJRE
+assembleZip.dependsOn jar
+
+assemble.dependsOn assembleZip
