@@ -94,5 +94,6 @@ task assembleZip(type: Zip) {
 
 assembleZip.dependsOn unzipWinJRE
 assembleZip.dependsOn jar
+assembleZip.dependsOn bootRepackage
 
 assemble.dependsOn assembleZip
