@@ -8,6 +8,7 @@ package nl.eveoh.qrgenerator.model;
 public class Location {
 
     private String hostKey;
+	private String locationName;
 
 
 
@@ -15,7 +16,17 @@ public class Location {
         return hostKey;
     }
 
+	public String getLocationName()
+	{
+		return locationName;
+	}
+
     public void setHostKey(String hostKey) {
         this.hostKey = hostKey;
     }
+
+	public void setLocationName(String locationName)
+	{
+		this.locationName = locationName;
+	}
 }

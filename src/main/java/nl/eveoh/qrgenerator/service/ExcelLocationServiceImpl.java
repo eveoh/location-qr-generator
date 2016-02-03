@@ -18,7 +18,8 @@ public class ExcelLocationServiceImpl implements LocationService {
 
     @Value("${Excel.HostKeyColumnHeader}")
     private String hostKeyColumnHeader;
-
+	@Value("${Excel.LocationNameHeader}")
+	private String locationNameHeader;
 
 
     @Override
@@ -35,11 +36,13 @@ public class ExcelLocationServiceImpl implements LocationService {
         Sheet sheet = wb.getSheetAt(0);
         int rowIndex = 0;
         int hostKeyColumn = 0;
+		int locationNameColumn = 0;
         for (Row row : sheet) {
             if (rowIndex == 0) {
                 hostKeyColumn = getHostKeyCell(row);
+				locationNameColumn = getLocationCell(row);
             } else {
-                Location location = parseRow(row, hostKeyColumn);
+                Location location = parseRow(row, hostKeyColumn, locationNameColumn);
 
                 if (location != null) {
                     locations.add(location);
@@ -64,16 +67,31 @@ public class ExcelLocationServiceImpl implements LocationService {
 
         return -1;
     }
+    private int getLocationCell(Row row) {
+        int cellIndex = 0;
+        for (Cell cell : row) {
+            if (locationNameHeader.equalsIgnoreCase(cell.getStringCellValue())) {
+                return cellIndex;
+            }
 
-    private Location parseRow(Row row, int hostKeyColumn) {
+            cellIndex++;
+        }
+
+        return -1;
+    }
+
+
+    private Location parseRow(Row row, int hostKeyColumn, int locationNameColumn) {
         Location location = new Location();
 
-        Cell cell = row.getCell(hostKeyColumn);
-        if (cell == null) {
+        Cell hostKeyCell = row.getCell(hostKeyColumn);
+		Cell locationNameCell = row.getCell(locationNameColumn);
+        if (hostKeyCell == null||locationNameCell==null) {
             return null;
         }
 
-        location.setHostKey(cell.getStringCellValue());
+        location.setHostKey(hostKeyCell.getStringCellValue());
+		location.setLocationName(locationNameCell.getStringCellValue());
 
         return location;
     }
