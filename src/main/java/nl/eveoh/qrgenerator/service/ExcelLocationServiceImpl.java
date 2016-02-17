@@ -18,8 +18,9 @@ public class ExcelLocationServiceImpl implements LocationService {
 
     @Value("${Excel.HostKeyColumnHeader}")
     private String hostKeyColumnHeader;
-	@Value("${Excel.FileNameColumnHeader}")
-	private String fileNameColumnHeader;
+
+    @Value("${Excel.FileNameColumnHeader}")
+    private String fileNameColumnHeader;
 
 
     @Override
@@ -36,11 +37,11 @@ public class ExcelLocationServiceImpl implements LocationService {
         Sheet sheet = wb.getSheetAt(0);
         int rowIndex = 0;
         int hostKeyColumn = 0;
-		int fileNameColumn = 0;
+        int fileNameColumn = 0;
         for (Row row : sheet) {
             if (rowIndex == 0) {
                 hostKeyColumn = getCellIndexOf(row, hostKeyColumnHeader);
-				fileNameColumn = getCellIndexOf(row, fileNameColumnHeader);
+                fileNameColumn = getCellIndexOf(row, fileNameColumnHeader);
             } else {
                 Location location = parseRow(row, hostKeyColumn, fileNameColumn);
 
@@ -72,13 +73,13 @@ public class ExcelLocationServiceImpl implements LocationService {
         Location location = new Location();
 
         Cell hostKeyCell = row.getCell(hostKeyColumn);
-		Cell locationNameCell = row.getCell(locationNameColumn);
-        if (hostKeyCell == null||locationNameCell==null) {
+        Cell locationNameCell = row.getCell(locationNameColumn);
+        if (hostKeyCell == null || locationNameCell == null) {
             return null;
         }
 
         location.setHostKey(hostKeyCell.getStringCellValue());
-		location.setFileName(locationNameCell.getStringCellValue());
+        location.setFileName(locationNameCell.getStringCellValue());
 
         return location;
     }
