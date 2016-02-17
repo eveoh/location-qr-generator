@@ -18,8 +18,8 @@ public class ExcelLocationServiceImpl implements LocationService {
 
     @Value("${Excel.HostKeyColumnHeader}")
     private String hostKeyColumnHeader;
-	@Value("${Excel.LocationNameHeader}")
-	private String locationNameHeader;
+	@Value("${Excel.LocationNameColumnHeader}")
+	private String locationNameColumnHeader;
 
 
     @Override
@@ -70,7 +70,7 @@ public class ExcelLocationServiceImpl implements LocationService {
     private int getLocationCell(Row row) {
         int cellIndex = 0;
         for (Cell cell : row) {
-            if (locationNameHeader.equalsIgnoreCase(cell.getStringCellValue())) {
+            if (locationNameColumnHeader.equalsIgnoreCase(cell.getStringCellValue())) {
                 return cellIndex;
             }
 
