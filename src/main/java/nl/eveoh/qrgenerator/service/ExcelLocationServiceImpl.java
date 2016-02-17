@@ -39,8 +39,8 @@ public class ExcelLocationServiceImpl implements LocationService {
 		int fileNameColumn = 0;
         for (Row row : sheet) {
             if (rowIndex == 0) {
-                hostKeyColumn = getHostKeyCell(row);
-				fileNameColumn = getFileNameCell(row);
+                hostKeyColumn = getCellIndexOf(row, hostKeyColumnHeader);
+				fileNameColumn = getCellIndexOf(row, fileNameColumnHeader);
             } else {
                 Location location = parseRow(row, hostKeyColumn, fileNameColumn);
 
@@ -55,10 +55,10 @@ public class ExcelLocationServiceImpl implements LocationService {
         return locations;
     }
 
-    private int getHostKeyCell(Row row) {
+    private int getCellIndexOf(Row row, String stringToMatch) {
         int cellIndex = 0;
         for (Cell cell : row) {
-            if (hostKeyColumnHeader.equalsIgnoreCase(cell.getStringCellValue())) {
+            if (stringToMatch.equalsIgnoreCase(cell.getStringCellValue())) {
                 return cellIndex;
             }
 
@@ -67,19 +67,6 @@ public class ExcelLocationServiceImpl implements LocationService {
 
         return -1;
     }
-    private int getFileNameCell(Row row) {
-        int cellIndex = 0;
-        for (Cell cell : row) {
-            if (fileNameColumnHeader.equalsIgnoreCase(cell.getStringCellValue())) {
-                return cellIndex;
-            }
-
-            cellIndex++;
-        }
-
-        return -1;
-    }
-
 
     private Location parseRow(Row row, int hostKeyColumn, int locationNameColumn) {
         Location location = new Location();
