@@ -86,7 +86,7 @@ public class QrGeneratorApplication implements CommandLineRunner {
 
             FileOutputStream out = null;
             try {
-                out = new FileOutputStream(new File(outputDirPath + File.separator + location.getLocationName() + ".png"));
+                out = new FileOutputStream(new File(outputDirPath + File.separator + location.getFileName() + ".png"));
 
                 try {
                     qrService.generateQrCode(qrCodeWidth, qrCodeHeight, out, uri);

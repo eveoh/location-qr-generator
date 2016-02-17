@@ -36,8 +36,8 @@ Application settings can be overriden in `application.properties` in the working
 <dd>Text to look for as HostKey column header in the spreadsheet (default is `HostKey`).
 </dd>
 
-<dt>Excel.LocationNameColumnHeader
-<dd>Text to look for as location name column header in the spreadsheet (defaults to value of `Excel.HostKeyColumnHeader`). The filename of the generated QR code will match this field (`.png` will be added).
+<dt>Excel.FileNameColumnHeader
+<dd>Text to look for as file name column header in the spreadsheet (defaults to value of `Excel.HostKeyColumnHeader`). The file name of the generated QR code will match this field (`.png` will be added).
 </dd>
 
 License

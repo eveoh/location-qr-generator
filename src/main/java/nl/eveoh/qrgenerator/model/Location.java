@@ -8,25 +8,22 @@ package nl.eveoh.qrgenerator.model;
 public class Location {
 
     private String hostKey;
-	private String locationName;
-
+    private String fileName;
 
 
     public String getHostKey() {
         return hostKey;
     }
 
-	public String getLocationName()
-	{
-		return locationName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
     public void setHostKey(String hostKey) {
         this.hostKey = hostKey;
     }
 
-	public void setLocationName(String locationName)
-	{
-		this.locationName = locationName;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }
