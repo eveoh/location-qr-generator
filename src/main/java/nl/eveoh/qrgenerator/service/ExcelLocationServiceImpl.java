@@ -19,6 +19,8 @@ public class ExcelLocationServiceImpl implements LocationService {
     @Value("${Excel.HostKeyColumnHeader}")
     private String hostKeyColumnHeader;
 
+    @Value("${Excel.FileNameColumnHeader}")
+    private String fileNameColumnHeader;
 
 
     @Override
@@ -35,11 +37,13 @@ public class ExcelLocationServiceImpl implements LocationService {
         Sheet sheet = wb.getSheetAt(0);
         int rowIndex = 0;
         int hostKeyColumn = 0;
+        int fileNameColumn = 0;
         for (Row row : sheet) {
             if (rowIndex == 0) {
-                hostKeyColumn = getHostKeyCell(row);
+                hostKeyColumn = getCellIndexOf(row, hostKeyColumnHeader);
+                fileNameColumn = getCellIndexOf(row, fileNameColumnHeader);
             } else {
-                Location location = parseRow(row, hostKeyColumn);
+                Location location = parseRow(row, hostKeyColumn, fileNameColumn);
 
                 if (location != null) {
                     locations.add(location);
@@ -52,10 +56,10 @@ public class ExcelLocationServiceImpl implements LocationService {
         return locations;
     }
 
-    private int getHostKeyCell(Row row) {
+    private int getCellIndexOf(Row row, String stringToMatch) {
         int cellIndex = 0;
         for (Cell cell : row) {
-            if (hostKeyColumnHeader.equalsIgnoreCase(cell.getStringCellValue())) {
+            if (stringToMatch.equalsIgnoreCase(cell.getStringCellValue())) {
                 return cellIndex;
             }
 
@@ -65,15 +69,17 @@ public class ExcelLocationServiceImpl implements LocationService {
         return -1;
     }
 
-    private Location parseRow(Row row, int hostKeyColumn) {
+    private Location parseRow(Row row, int hostKeyColumn, int locationNameColumn) {
         Location location = new Location();
 
-        Cell cell = row.getCell(hostKeyColumn);
-        if (cell == null) {
+        Cell hostKeyCell = row.getCell(hostKeyColumn);
+        Cell locationNameCell = row.getCell(locationNameColumn);
+        if (hostKeyCell == null || locationNameCell == null) {
             return null;
         }
 
-        location.setHostKey(cell.getStringCellValue());
+        location.setHostKey(hostKeyCell.getStringCellValue());
+        location.setFileName(locationNameCell.getStringCellValue());
 
         return location;
     }
