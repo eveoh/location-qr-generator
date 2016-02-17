@@ -51,7 +51,6 @@ public class QrGeneratorApplication implements CommandLineRunner {
     private String urlTimetableType;
 
 
-
     public void generateQrCodes(String inputFile, String outputDirPath) {
         boolean allSucceeded = true;
 
@@ -118,8 +117,9 @@ public class QrGeneratorApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (args.length != 2)  {
+        if (args.length != 2) {
             System.err.println("Requires two arguments: <input xls(x)> <output dir>");
+            System.exit(1);
         }
 
         generateQrCodes(args[0], args[1]);
