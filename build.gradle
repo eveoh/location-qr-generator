@@ -18,7 +18,8 @@ ext {
     zxingVersion = '2.3.0'
     poiVersion = '3.9'
     httpClientVersion = '4.3.1'
-    jreVersion = '1.7.0_45'
+    jreVersion = '1.8.0_74'
+    jreDownloadUrl = 'https://files.eveoh.nl/jre-8u74-windows-i586.zip'
 }
 
 apply plugin: 'java'
@@ -55,7 +56,7 @@ dependencies {
 task downloadWinJRE(type: Download) {
     def target = "${buildDir}/jre/download/jre-${jreVersion}-windows-i586.zip"
 
-    src "http://files.eveoh.nl/jre-${jreVersion}-windows-i586.zip"
+    src jreDownloadUrl
     dest target
 
     onlyIf { !new File(target).exists() }
